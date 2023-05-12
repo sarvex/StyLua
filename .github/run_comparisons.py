@@ -84,7 +84,7 @@ for repo, data in REPOS.items():
 
     os.chdir(repo)
 
-    print(f"Repo cloned and tool prepared", file=sys.stderr)
+    print("Repo cloned and tool prepared", file=sys.stderr)
 
     # Run the base tool on the repository
     runMainProcess = executeTool("../stylua-main", data["command"])
@@ -93,7 +93,7 @@ for repo, data in REPOS.items():
         print(f"**Error when running main on `{repo}`**:")
         printCodeblock(runMainStderr, "")
 
-    print(f"Main tool executed", file=sys.stderr)
+    print("Main tool executed", file=sys.stderr)
 
     # Commit the current changes
     commitProcess = subprocess.Popen(["git", "commit", "-a", "--allow-empty", "--no-verify", "-m", "base"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -103,11 +103,11 @@ for repo, data in REPOS.items():
         printCodeblock(commitProcessStderr or "<no output>", "")
         continue
 
-    print(f"Main changes committed", file=sys.stderr)
+    print("Main changes committed", file=sys.stderr)
 
     # If we are diffing main vs change formatting, then reset to original code
     if formattingType == "diffMainVsChangeFormat":
-        print(f"Restoring original code", file=sys.stderr)
+        print("Restoring original code", file=sys.stderr)
         restoreProcess = subprocess.Popen(["git", "checkout", "HEAD~1", "."], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         restoreProcessStderr = restoreProcess.communicate()[1].decode()
         if restoreProcess.wait() != 0:
@@ -115,7 +115,7 @@ for repo, data in REPOS.items():
             printCodeblock(restoreProcessStderr or "<no output>", "")
             continue
 
-        print(f"Unstaging original code", file=sys.stderr)
+        print("Unstaging original code", file=sys.stderr)
         unstageProcess = subprocess.Popen(["git", "reset"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         unstageProcessStderr = unstageProcess.communicate()[1].decode()
         if unstageProcess.wait() != 0:
@@ -130,7 +130,7 @@ for repo, data in REPOS.items():
         print(f"**Error when running latest on `{repo}`**:")
         printCodeblock(runLatestStderr, "")
 
-    print(f"Latest tool executed", file=sys.stderr)
+    print("Latest tool executed", file=sys.stderr)
 
     # Compute the diff
     diffProcess = subprocess.Popen(['git', 'diff', f"--src-prefix=ORI/{repo}/", f"--dst-prefix=ALT/{repo}/"], stdout=subprocess.PIPE)
@@ -139,7 +139,7 @@ for repo, data in REPOS.items():
     if diffStdout and diffStdout.strip() != "":
         diffs.append(diffStdout)
 
-    print(f"Diff calculated, cleaning up", file=sys.stderr)
+    print("Diff calculated, cleaning up", file=sys.stderr)
 
     # Cleanup: move out of the repository
     os.chdir("..")
